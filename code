@@ -1,0 +1,77 @@
+  int rightlight;
+  int  leftlight;
+
+void setup() {
+  pinMode(A0,OUTPUT);//左輪前進
+  pinMode(A1,OUTPUT);//右輪前進
+  pinMode(A2,OUTPUT);//左輪後退
+  pinMode(A3,OUTPUT);//右輪後退
+  pinMode(A4,INPUT);//right
+  pinMode(A5,INPUT);//left
+  Serial.begin(9600);
+}
+
+void turnright(){
+  digitalWrite(A0,HIGH);
+  digitalWrite(A3,HIGH);
+  digitalWrite(A1,LOW);
+  digitalWrite(A2,LOW);
+  loop();
+}
+
+void turnleft(){
+  digitalWrite(A1,HIGH);
+  digitalWrite(A2,HIGH);
+  digitalWrite(A3,LOW);
+  digitalWrite(A0,LOW);
+  loop();
+}
+
+void backward(){
+  digitalWrite(A2,HIGH);
+  digitalWrite(A3,HIGH);
+  digitalWrite(A0,LOW);
+  digitalWrite(A1,LOW);
+}
+
+void backwardleft(){
+  digitalWrite(A2,HIGH);
+}
+
+void backwardright(){
+  digitalWrite(A3,HIGH);
+}
+void straight(){
+  digitalWrite(A0,HIGH);
+  digitalWrite(A1,HIGH);
+  digitalWrite(A2,LOW);
+  digitalWrite(A3,LOW);
+}
+
+void turn(){
+  if(leftlight == 0 && rightlight ==0){
+    backward();
+  }
+  else if(leftlight == 0 ){
+    turnleft();
+  }
+  else if(rightlight == 0 ){
+    turnright();
+  }
+  else{
+    straight();
+  }
+  
+  
+}
+
+
+void loop() {
+
+  leftlight = digitalRead(A5);
+  rightlight = digitalRead(A4);
+  Serial.print(leftlight);
+  turn();
+
+ 
+}
