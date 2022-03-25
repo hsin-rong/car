@@ -1,5 +1,6 @@
   int rightlight;
   int  leftlight;
+  long duration, cm, inches;
 
 void setup() {
   pinMode(A0,OUTPUT);//左輪前進
@@ -8,6 +9,8 @@ void setup() {
   pinMode(A3,OUTPUT);//右輪後退
   pinMode(A4,INPUT);//right
   pinMode(A5,INPUT);//left
+  pinMode(3,OUTPUT);
+  pinMode(2,INPUT);
   Serial.begin(9600);
 }
 
@@ -16,7 +19,7 @@ void turnright(){
   digitalWrite(A3,HIGH);
   digitalWrite(A1,LOW);
   digitalWrite(A2,LOW);
-  loop();
+  
 }
 
 void turnleft(){
@@ -24,7 +27,7 @@ void turnleft(){
   digitalWrite(A2,HIGH);
   digitalWrite(A3,LOW);
   digitalWrite(A0,LOW);
-  loop();
+  
 }
 
 void backward(){
@@ -32,6 +35,7 @@ void backward(){
   digitalWrite(A3,HIGH);
   digitalWrite(A0,LOW);
   digitalWrite(A1,LOW);
+
 }
 
 void backwardleft(){
@@ -65,13 +69,41 @@ void turn(){
   
 }
 
+void distance(){
+  digitalWrite(3, LOW);
+  delayMicroseconds(5);
+  digitalWrite(3, HIGH);     // 給 Trig 高電位，持續 10微秒
+  delayMicroseconds(10);
+  digitalWrite(3, LOW);
+
+  duration = pulseIn(2, HIGH);   // 收到高電位時的時間
+ 
+  cm = (duration/2) / 29.1;    
+  delay(100);
+  Serial.print(cm);
+  Serial.println("cm");
+ }
+
+void freeze(){
+  digitalWrite(A1,LOW);
+  digitalWrite(A2,LOW);
+  digitalWrite(A3,LOW);
+  digitalWrite(A0,LOW);
+}
+
 
 void loop() {
-
-  leftlight = digitalRead(A5);
-  rightlight = digitalRead(A4);
-  Serial.print(leftlight);
-  turn();
-
- 
+  distance();
+  if(cm < 10){
+    for(int i=0;i< 1;i++){
+      backward();
+      delay(500);
+    }
+    for(int i=0;i< 1;i++){
+      turnright();
+      delay(250);
+    }
+    distance();
+  }
+   freeze();
 }
